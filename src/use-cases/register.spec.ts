@@ -1,15 +1,21 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { RegisterUseCase } from './register'
 import { compare } from 'bcryptjs'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 import { UserAlreadyExistError } from './erros/user-already-exists-error'
+import { UsersRepository } from '@/repositories/users-repository'
+
+let usersRepository: UsersRepository
+let sut: RegisterUseCase
 
 describe('Register Use case', () => {
-  it('should be able to register', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository()
+    sut = new RegisterUseCase(usersRepository)
+  })
 
-    const { user } = await registerUseCase.execute({
+  it('should be able to register', async () => {
+    const { user } = await sut.execute({
       name: 'yuri',
       email: 'yuri@gmail.com',
       password: 'Iruysousa2004',
@@ -19,10 +25,7 @@ describe('Register Use case', () => {
   })
 
   it('should hash user password upon registration', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
-    const { user } = await registerUseCase.execute({
+    const { user } = await sut.execute({
       name: 'yuri',
       email: 'yuri@gmail.com',
       password: 'Iruysousa2004',
@@ -35,19 +38,16 @@ describe('Register Use case', () => {
   })
 
   it('not should create user with email already exists', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
     const email = 'yurisousa20@gmail.com'
 
-    await registerUseCase.execute({
+    await sut.execute({
       name: 'yuri',
       email,
       password: 'Iruysousa2004',
     })
 
     await expect(() =>
-      registerUseCase.execute({
+      sut.execute({
         name: 'yuri',
         email,
         password: 'Iruysousa2004',
