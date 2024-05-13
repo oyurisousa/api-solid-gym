@@ -34,7 +34,7 @@ describe('Register Use case', () => {
       'Iruysousa2004',
       user.password_hash,
     )
-    expect(isPasswordCorrectlyHashed).toBe(true)
+    await expect(isPasswordCorrectlyHashed).toBe(true)
   })
 
   it('not should create user with email already exists', async () => {
