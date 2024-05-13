@@ -6,6 +6,6 @@ app
     host: '0.0.0.0.',
     port: env.PORT,
   })
-  .then(() => console.log('🚀 server running...'))
+  .then(() => console.log(`🚀 server running in port ${env.PORT}...`))
 
 // 93
