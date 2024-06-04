@@ -4,7 +4,7 @@ import request from 'supertest'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-describe('Nearby Gym (e2e)', () => {
+describe('Search Gym (e2e)', () => {
   beforeAll(() => {
     app.ready()
   })
@@ -12,36 +12,35 @@ describe('Nearby Gym (e2e)', () => {
     app.close()
   })
 
-  it('shoule be able to list nearby gyms', async () => {
+  it('shoule be able to search a gym', async () => {
     const { token } = await createAndAuthenticateUser(app)
 
     await request(app.server)
       .post('/gyms')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'ZeroAll',
-        description: 'the best, from zero to one',
-        phone: '(88) 99999-8888',
-        latitude: -2.8915351,
-        longitude: -41.6468856,
+        title: 'Typescript Gym',
+        description: 'some description',
+        phone: '(88) 99999-9999',
+        latitude: -2.9271375,
+        longitude: -41.7256773,
       })
 
     await request(app.server)
       .post('/gyms')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'ZeroOne',
-        description: 'the best, from zero to one',
-        phone: '(88) 99999-8888',
+        title: 'Ruby Gym',
+        description: 'some description',
+        phone: '(88) 99999-9999',
         latitude: -2.9271375,
-        longitude: -41.7506933,
+        longitude: -41.7256773,
       })
 
     const response = await request(app.server)
-      .get('/gyms/nearby')
+      .get('/gyms/search')
       .query({
-        latitude: -2.9238915,
-        longitude: -41.7506933,
+        q: 'Typescript',
       })
       .set('Authorization', `Bearer ${token}`)
       .send()
@@ -50,7 +49,7 @@ describe('Nearby Gym (e2e)', () => {
     expect(response.body.gyms).toHaveLength(1)
     expect(response.body.gyms).toEqual([
       expect.objectContaining({
-        title: 'ZeroOne',
+        title: 'Typescript Gym',
       }),
     ])
   })
