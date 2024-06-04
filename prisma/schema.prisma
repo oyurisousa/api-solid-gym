@@ -47,5 +47,5 @@ model Gym {
   longitude   Decimal
   checkIns    CheckIn[]
 
-  @@map("gyns")
+  @@map("gyms")
 }
